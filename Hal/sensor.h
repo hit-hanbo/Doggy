@@ -5,12 +5,12 @@
 #include "stm32f1xx_hal_adc.h"
 
 typedef struct{
-	uint16_t Fire_A;
-	uint16_t Fire_B;
-	uint16_t Fire_C;
-	uint16_t Fire_D;
-	uint16_t Temperature;
-	uint16_t Gas_A;
+	uint32_t Fire_A;
+	uint32_t Fire_B;
+	uint32_t Fire_C;
+	uint32_t Fire_D;
+	uint32_t Temperature;
+	uint32_t Gas_A;
 }ADC_ValueTypeDef;
 
 void ADC_Init(void);

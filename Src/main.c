@@ -11,6 +11,8 @@ ADC_HandleTypeDef hadc1;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
+extern ADC_ValueTypeDef ADC_Value_Current;
+
 #define GPIO_KEY_NUM 2 ///< Defines the total number of key member
 keyTypedef_t singleKey[GPIO_KEY_NUM]; ///< Defines a single key member array pointer
 keysTypedef_t keys;  
@@ -88,13 +90,13 @@ void keyInit(void)
 
 int main(void)
 {
-  HAL_Init();
-  SystemClock_Config();
-  MX_GPIO_Init();
-  MX_TIM2_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-  MX_NVIC_Init();
+    HAL_Init();
+    SystemClock_Config();
+    MX_GPIO_Init();
+    MX_TIM2_Init();
+    MX_USART1_UART_Init();
+    MX_USART2_UART_Init();
+    MX_NVIC_Init();
 	MX_ADC1_Init();
 	HAL_Delay(10);
 	timerInit();
@@ -105,11 +107,12 @@ int main(void)
 	userInit();
 	GIZWITS_LOG("MCU Init Success \n");
 	LD1_ON;
-  while(1)
-  {
+    HAL_ADC_Start_DMA(&hadc1, &ADC_Value_Current, 6);
+    while(1)
+    {
 		userHandle();
 		gizwitsHandle((dataPoint_t *)&currentDataPoint);
-  }
+    }
 }
 
 /** System Clock Configuration
