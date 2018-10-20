@@ -1,26 +1,13 @@
-/**
-************************************************************
-* @file         gizwits_product.c
-* @brief        Gizwits control protocol processing, and platform-related       hardware initialization 
-* @author       Gizwits
-* @date         2017-07-19
-* @version      V03030000
-* @copyright    Gizwits
-* 
-* @note         机智云.只为智能硬件而生
-*               Gizwits Smart Cloud  for Smart Products
-*               链接|增值ֵ|开放|中立|安全|自有|自由|生态
-*               www.gizwits.com
-*
-***********************************************************/
-
 #include <stdio.h>
 #include <string.h>
 #include "hal_key.h"
 #include "gizwits_product.h"
 #include "common.h"
 #include "sensor.h"
-#include "main.h"
+
+extern ADC_ValueTypeDef ADC_Value_Current;
+extern ADC_ValueTypeDef ADC_Value_Compare;
+extern uint32_t ADC_Value_Buffer[6];
 
 static uint32_t timerMsCount;
 uint8_t aRxBuffer;
@@ -80,12 +67,12 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
         GIZWITS_LOG("Evt: EVENT_LED %d \n", currentDataPoint.valueLED);
         if(0x01 == currentDataPoint.valueLED)
         {
-          //user handle
+          // Place Holder For Control Function
         }
         else
         {
-          //user handle    
-        }
+          // Place Holder For Control Function
+		}
         break;
 
 
@@ -104,7 +91,7 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
  
         break;
       case WIFI_CON_M2M:
- 
+
         break;
       case WIFI_DISCON_M2M:
         break;
@@ -148,11 +135,11 @@ int8_t gizwitsEventProcess(eventInfo_t *info, uint8_t *gizdata, uint32_t len)
 void userHandle(void)
 {
 	static uint32_t thLastTimer = 0;
-	if(gizGetTimerCount() - thLastTimer > 70000)
+	if(gizGetTimerCount() - thLastTimer > 7000)      // If Timer = 7s
 	{
-		LD1_TOGGLE;
-		ADC_Value_Handler();
-		thLastTimer = 0;
+		LD1_TOGGLE;                                  // Toggle LD1
+		ADC_Value_Handler();                         // Handle 
+		thLastTimer = 0;                             // Reset Timer
 	}
 }
 
@@ -167,7 +154,14 @@ void userHandle(void)
 void userInit(void)
 {
     memset((uint8_t*)&currentDataPoint, 0, sizeof(dataPoint_t));
-    ADC_Sample();
+		// while(ADC_Value_Buffer[0] == 0x00000000U);
+		ADC_Value_Current.Fire_A = ADC_Value_Buffer[0];
+		ADC_Value_Current.Fire_B = ADC_Value_Buffer[1];
+		ADC_Value_Current.Fire_C = ADC_Value_Buffer[2];
+		ADC_Value_Current.Fire_D = ADC_Value_Buffer[3];
+		ADC_Value_Current.Gas_A = ADC_Value_Buffer[4];
+		ADC_Value_Current.Temperature = ADC_Value_Buffer[5];
+		ADC_Value_Compare = ADC_Value_Current;	
 }
 
 

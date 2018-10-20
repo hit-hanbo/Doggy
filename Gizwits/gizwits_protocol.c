@@ -168,6 +168,11 @@ static int8_t ICACHE_FLASH_ATTR gizCheckReport(dataPoint_t *cur, dataPoint_t *la
         GIZWITS_LOG("valueLED Changed\n");
         ret = 1;
     }
+    if(last->valueGas != cur->valueGas)
+    {
+        GIZWITS_LOG("valueGas Changed\n");
+        ret = 1;
+    }
     if(last->valueFire_1 != cur->valueFire_1)
     {
         GIZWITS_LOG("valueFire_1 Changed\n");
@@ -197,14 +202,6 @@ static int8_t ICACHE_FLASH_ATTR gizCheckReport(dataPoint_t *cur, dataPoint_t *la
             ret = 1;
         }
     }
-    if(last->valueGas != cur->valueGas)
-    {
-        if(currentTime - lastReportTime >= REPORT_TIME_MAX)
-        {
-            GIZWITS_LOG("valueGas Changed\n");
-            ret = 1;
-        }
-    }
 
     if(1 == ret)
     {
@@ -230,18 +227,18 @@ static int8_t ICACHE_FLASH_ATTR gizDataPoints2ReportData(dataPoint_t *dataPoints
     }
 
     gizMemset((uint8_t *)devStatusPtr->wBitBuf,0,sizeof(devStatusPtr->wBitBuf));
-    gizMemset((uint8_t *)devStatusPtr->rBitBuf,0,sizeof(devStatusPtr->rBitBuf));
+    gizMemset((uint8_t *)devStatusPtr->alertBitBuf,0,sizeof(devStatusPtr->alertBitBuf));
 
     gizStandardCompressValue(LED_BYTEOFFSET,LED_BITOFFSET,LED_LEN,(uint8_t *)devStatusPtr,dataPoints->valueLED);
+    gizStandardCompressValue(Gas_BYTEOFFSET,Gas_BITOFFSET,Gas_LEN,(uint8_t *)devStatusPtr,dataPoints->valueGas);
     gizStandardCompressValue(Fire_1_BYTEOFFSET,Fire_1_BITOFFSET,Fire_1_LEN,(uint8_t *)devStatusPtr,dataPoints->valueFire_1);
     gizStandardCompressValue(Fire_2_BYTEOFFSET,Fire_2_BITOFFSET,Fire_2_LEN,(uint8_t *)devStatusPtr,dataPoints->valueFire_2);
     gizStandardCompressValue(Fire_3_BYTEOFFSET,Fire_3_BITOFFSET,Fire_3_LEN,(uint8_t *)devStatusPtr,dataPoints->valueFire_3);
     gizStandardCompressValue(Fire_4_BYTEOFFSET,Fire_4_BITOFFSET,Fire_4_LEN,(uint8_t *)devStatusPtr,dataPoints->valueFire_4);
     gizByteOrderExchange((uint8_t *)devStatusPtr->wBitBuf,sizeof(devStatusPtr->wBitBuf));
-    gizByteOrderExchange((uint8_t *)devStatusPtr->rBitBuf,sizeof(devStatusPtr->rBitBuf));
+    gizByteOrderExchange((uint8_t *)devStatusPtr->alertBitBuf,sizeof(devStatusPtr->alertBitBuf));
 
     devStatusPtr->valueTemperature = gizY2X(Temperature_RATIO,  Temperature_ADDITION, dataPoints->valueTemperature); 
-    devStatusPtr->valueGas = gizY2X(Gas_RATIO,  Gas_ADDITION, dataPoints->valueGas); 
 
 
 

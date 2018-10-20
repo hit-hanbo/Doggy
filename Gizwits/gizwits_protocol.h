@@ -77,36 +77,35 @@ extern "C" {
 #define LED_BYTEOFFSET                    0
 #define LED_BITOFFSET                     0
 #define LED_LEN                           1
-#define Fire_1_BYTEOFFSET                    1
-#define Fire_1_BITOFFSET                     0
+#define Gas_BYTEOFFSET                    2
+#define Gas_BITOFFSET                     0
+#define Gas_LEN                           1
+#define Fire_1_BYTEOFFSET                    2
+#define Fire_1_BITOFFSET                     1
 #define Fire_1_LEN                           1
-#define Fire_2_BYTEOFFSET                    1
-#define Fire_2_BITOFFSET                     1
+#define Fire_2_BYTEOFFSET                    2
+#define Fire_2_BITOFFSET                     2
 #define Fire_2_LEN                           1
-#define Fire_3_BYTEOFFSET                    1
-#define Fire_3_BITOFFSET                     2
+#define Fire_3_BYTEOFFSET                    2
+#define Fire_3_BITOFFSET                     3
 #define Fire_3_LEN                           1
-#define Fire_4_BYTEOFFSET                    1
-#define Fire_4_BITOFFSET                     3
+#define Fire_4_BYTEOFFSET                    2
+#define Fire_4_BITOFFSET                     4
 #define Fire_4_LEN                           1
 
 #define Temperature_RATIO                         1
 #define Temperature_ADDITION                      0
 #define Temperature_MIN                           0
-#define Temperature_MAX                           50
-#define Gas_RATIO                         1
-#define Gas_ADDITION                      0
-#define Gas_MIN                           0
-#define Gas_MAX                           50
+#define Temperature_MAX                           200
 /**@} */
 
 /** Writable data points Boolean and enumerated variables occupy byte size */
 #define COUNT_W_BIT 1
 
+
+
 /** Read-only data points Boolean and enumerated variables occupy byte size */
-#define COUNT_R_BIT 1
-
-
+#define COUNT_ALERT_BIT 1
 
 
 
@@ -293,12 +292,12 @@ typedef enum
 /** User Area Device State Structure */
 typedef struct {
   bool valueLED;
+  uint32_t valueTemperature;
+  bool valueGas;
   bool valueFire_1;
   bool valueFire_2;
   bool valueFire_3;
   bool valueFire_4;
-  uint32_t valueTemperature;
-  uint32_t valueGas;
 } dataPoint_t;
 
 
@@ -324,9 +323,8 @@ typedef struct {
 
 typedef struct {
   uint8_t wBitBuf[COUNT_W_BIT];
-  uint8_t rBitBuf[COUNT_R_BIT];
   uint8_t valueTemperature;
-  uint8_t valueGas;
+  uint8_t alertBitBuf[COUNT_ALERT_BIT];
 } devStatus_t; 
 
 
